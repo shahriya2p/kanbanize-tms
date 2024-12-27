@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { dummyUsers } from "../data";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface User {
     id: number;
@@ -11,18 +10,27 @@ export interface User {
 const initialState: {
     users: User[]
 } = {
-    users: dummyUsers,
+    users: [],
 }
 
 const userSlice = createSlice({
     initialState,
     name: 'userSlice',
     reducers: {
-        getUser: (state, action) => {
-            state.users = action.payload
+        addUser: (state, action: PayloadAction<User>) => {
+            state.users.push(action.payload);
         },
-    }
-})
+        editUser: (state, action: PayloadAction<User>) => {
+            const index = state.users.findIndex((user) => user.id === action.payload.id);
+            if (index !== -1) {
+                state.users[index] = action.payload;
+            }
+        },
+        deleteUser: (state, action: PayloadAction<string>) => {
+            state.users = state.users.filter((user) => user.id !== +action.payload);
+        },
+    },
+});
 
-export const { getUser } = userSlice.actions
+export const { addUser, editUser, deleteUser } = userSlice.actions
 export default userSlice.reducer

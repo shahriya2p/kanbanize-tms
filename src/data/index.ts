@@ -70,11 +70,11 @@ export const analyticsData = {
   ]
 }
 export const dummyUsers = [
-  { id: 1, name: 'Priyanka Dumasia', initials: 'PD', color: '#FF5733' },
-  { id: 2, name: 'Amit Desai', initials: 'AD', color: '#33B5FF' },
-  { id: 3, name: 'Ankit Mehta', initials: 'AM', color: '#FF33D4' },
-  { id: 4, name: 'Arjun Patel', initials: 'AP', color: '#33FF57' },
-  { id: 5, name: 'John Doe', initials: 'JD', color: '#FFC300' },
+  { id: '1', name: 'Priyanka Dumasia', initials: 'PD', color: '#FF5733' },
+  { id: '2', name: 'Amit Desai', initials: 'AD', color: '#33B5FF' },
+  { id: '3', name: 'Ankit Mehta', initials: 'AM', color: '#FF33D4' },
+  { id: '4', name: 'Arjun Patel', initials: 'AP', color: '#33FF57' },
+  { id: '5', name: 'John Doe', initials: 'JD', color: '#FFC300' },
 ];
 export const dummyTasks = [
   {
@@ -114,3 +114,81 @@ export const dummyTasks = [
     assignedUserIds: null,
   },
 ];
+
+export const dummyTasksByStatus = {
+  todo: [
+    {
+      id: '2',
+      title: 'Set up Database',
+      description: 'Create the initial database schema and seed data.',
+      status: 'To Do',
+      priority: 'Medium',
+      dueDate: '2024-12-29',
+      assignedUserId: 3,
+    },
+    {
+      id: '3',
+      title: 'UI Design for Dashboard',
+      description: 'Design the user interface for the dashboard screen.',
+      status: 'To Do',
+      priority: 'Low',
+      dueDate: '2025-01-05',
+      assignedUserId: 5,
+    },
+  ],
+  inProgress: [
+    {
+      id: '1',
+      title: 'Implement Login Page',
+      description: 'Design and implement the login functionality with validation.',
+      status: 'In Progress',
+      priority: 'High',
+      dueDate: '2024-12-30',
+      assignedUserId: 2,
+    },
+  ],
+  qa: [
+    {
+      id: '5',
+      title: 'Test New Features',
+      description: 'Perform QA on new features to ensure they meet requirements.',
+      status: 'QA',
+      priority: 'Medium',
+      dueDate: '2024-12-31',
+      assignedUserId: null,
+    },
+  ],
+  uat: [
+    {
+      id: '6',
+      title: 'User Acceptance Testing',
+      description: 'Test the application with end-users to validate requirements.',
+      status: 'UAT',
+      priority: 'Medium',
+      dueDate: '2025-01-10',
+      assignedUserId: 1,
+    },
+  ],
+  rca: [
+    {
+      id: '7',
+      title: 'Root Cause Analysis for Issue #456',
+      description: 'Investigate and resolve the root cause of issue #456.',
+      status: 'RCA',
+      priority: 'Low',
+      dueDate: '2025-01-05',
+      assignedUserId: 4,
+    },
+  ],
+  done: [
+    {
+      id: '4',
+      title: 'Fix Bug #123',
+      description: 'Resolve the issue with API timeout for long queries.',
+      status: 'Completed',
+      priority: 'High',
+      dueDate: '2024-12-20',
+      assignedUserId: null,
+    },
+  ],
+};

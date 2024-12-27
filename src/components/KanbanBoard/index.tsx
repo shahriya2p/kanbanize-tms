@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Box, Paper, Typography, Avatar, AvatarGroup } from '@mui/material';
+import { Box, Paper, Typography, Avatar, Tooltip } from '@mui/material';
+import TaskModal from '../Task/TaskModal';
+import { dummyTasksByStatus } from '../../data';
+import PersonIcon from '@mui/icons-material/Person';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import DensityMediumIcon from '@mui/icons-material/DensityMedium';
+import UserListPopover from '../Popover/UserListPopover';
 
 const dummyUsers = [
   { id: 1, name: 'Priyanka Dumasia', initials: 'PD', color: '#FF5733' },
@@ -11,21 +18,11 @@ const dummyUsers = [
 ];
 
 const KanbanBoard: React.FC = () => {
-  const [tasks, setTasks] = useState({
-    todo: [
-      { id: '1', title: 'Task 1', assignedUserId: null },
-      { id: '2', title: 'Task 2', assignedUserId: null },
-    ],
-    inProgress: [
-      { id: '3', title: 'Task 3', assignedUserId: 1 },
-    ],
-    qa: [{ id: '5', title: 'Task 5', assignedUserId: null }],
-    uat: [{ id: '6', title: 'Task 6', assignedUserId: null }],
-    rca: [{ id: '7', title: 'Task 7', assignedUserId: null }],
-    done: [
-      { id: '4', title: 'Task 4', assignedUserId: 2 },
-    ],
-  });
+  const [tasks, setTasks] = useState(dummyTasksByStatus);
+  const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
+  const [priorityPopoverAnchor, setPriorityPopoverAnchor] = useState<HTMLElement | null>(null);
 
   const onDragEnd = (result: any) => {
     const { source, destination } = result;
@@ -46,24 +43,43 @@ const KanbanBoard: React.FC = () => {
     });
   };
 
-  const handleAssignUser = (taskId: string, column: string) => {
-    const selectedUser = prompt(
-      `Enter User ID to assign (Available IDs: ${dummyUsers
-        .map((user) => user.id)
-        .join(', ')}):`
-    );
-    const userId = parseInt(selectedUser || '', 10);
-
-    if (!dummyUsers.some((user) => user.id === userId)) {
-      alert('Invalid user ID');
-      return;
+  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>, taskId: string) => {
+    event.stopPropagation();
+    // setPriorityPopoverAnchor(null);
+    if (priorityPopoverAnchor) {
+      setPriorityPopoverAnchor(null);
     }
+    setAnchorEl(event.currentTarget);
+    setCurrentTaskId(taskId);
+  };
 
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setCurrentTaskId(null);
+    setSelectedTask(null);
+    setPriorityPopoverAnchor(null);
+  };
+
+  const handleAssignUser = (userId: number) => {
     const updatedTasks = { ...tasks };
-    updatedTasks[column] = updatedTasks[column].map((task) =>
-      task.id === taskId ? { ...task, assignedUserId: userId } : task
-    );
+    Object.keys(updatedTasks).forEach((column) => {
+      updatedTasks[column] = updatedTasks[column].map((task) =>
+        task.id === currentTaskId ? { ...task, assignedUserId: userId } : task
+      );
+    });
     setTasks(updatedTasks);
+    handleClosePopover();
+  };
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return <DoubleArrowIcon sx={{ color: 'red', rotate: '270deg' }} />;
+      case 'medium':
+        return <DensityMediumIcon sx={{ color: 'orange' }} />;
+      case 'low':
+        return <KeyboardDoubleArrowDownIcon sx={{ color: '#0C66E4' }} />;
+    }
   };
 
   return (
@@ -77,7 +93,7 @@ const KanbanBoard: React.FC = () => {
                 {...provided.droppableProps}
                 sx={{
                   padding: 2,
-                  width: 244,
+                  width: 240,
                   minHeight: 400,
                   backgroundColor: '#f9f9f9',
                   display: 'flex',
@@ -100,32 +116,77 @@ const KanbanBoard: React.FC = () => {
                           backgroundColor: '#e0e0e0',
                           borderRadius: 1,
                           display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'flex-start',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                           gap: 1,
                           cursor: 'pointer',
                         }}
-                        onClick={() => handleAssignUser(task.id, column)}
+                        onClick={() => setSelectedTask(task.id)}
                       >
                         <Typography>{task.title}</Typography>
-                        <AvatarGroup max={3}>
-                          {task.assignedUserId !== null && (
-                            <Avatar
-                              sx={{
-                                bgcolor: dummyUsers.find(
-                                  (u) => u.id === task.assignedUserId
-                                )?.color,
-                              }}
-                            >
-                              {
-                                dummyUsers.find(
-                                  (u) => u.id === task.assignedUserId
-                                )?.initials
-                              }
-                            </Avatar>
-                          )}
-                        </AvatarGroup>
+                        <Tooltip
+                          title={`${task.priority} Priority`}
+                          placement="bottom"
+                          slotProps={{
+                            popper: {
+                              modifiers: [
+                                {
+                                  name: 'offset',
+                                  options: {
+                                    offset: [0, -10],
+                                  },
+                                },
+                              ],
+                            },
+                          }}
+                        >
+                          <Box
+                            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                          >
+                            {getPriorityIcon(task?.priority?.toLocaleLowerCase())!}
+                          </Box>
+                        </Tooltip>
+
+                        <Tooltip
+                          title={
+                            task.assignedUserId
+                              ? dummyUsers.find((u) => u.id === task.assignedUserId)?.name
+                              : 'Unassigned'
+                          }
+                          placement="bottom"
+                          slotProps={{
+                            popper: {
+                              modifiers: [
+                                {
+                                  name: 'offset',
+                                  options: {
+                                    offset: [0, -10],
+                                  },
+                                },
+                              ],
+                            },
+                          }}
+                        >
+                          <Avatar
+                            sx={{
+                              bgcolor: task.assignedUserId
+                                ? dummyUsers.find((u) => u.id === task.assignedUserId)?.color
+                                : '#bdbdbd',
+                              height: 32,
+                              width: 32,
+                              fontSize: 15,
+                            }}
+                            onClick={(event) => handleAvatarClick(event, task.id)}
+                          >
+                            {task.assignedUserId ? (
+                              dummyUsers.find((u) => u.id === task.assignedUserId)?.initials
+                            ) : (
+                              <PersonIcon />
+                            )}
+                          </Avatar>
+                        </Tooltip>
                       </Box>
+
                     )}
                   </Draggable>
                 ))}
@@ -135,6 +196,28 @@ const KanbanBoard: React.FC = () => {
           </Droppable>
         ))}
       </DragDropContext>
+      {selectedTask && (
+        <TaskModal
+          task={Object.values(tasks).flat().find((t) => t.id === selectedTask)}
+          onClose={() => setSelectedTask(null)}
+          onSave={(updatedTask) => {
+            const updatedTasks = { ...tasks };
+            Object.keys(updatedTasks).forEach((column) => {
+              updatedTasks[column] = updatedTasks[column].map((task) =>
+                task.id === updatedTask.id ? updatedTask : task
+              );
+            });
+            setTasks(updatedTasks);
+            setSelectedTask(null);
+          }}
+        />
+      )}
+      <UserListPopover
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        onSelectUser={handleAssignUser}
+        users={dummyUsers}
+      />
     </Box>
   );
 };

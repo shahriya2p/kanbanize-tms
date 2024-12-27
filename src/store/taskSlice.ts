@@ -1,59 +1,63 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from 'uuid'
-import { dummyTasks, taskData } from "../data";
-
-// export interface Task {
-//     _id: string
-//     description: string
-//     status: string
-// }
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Task {
   id: number;
   title: string;
   description: string;
-  status: string;
-  priority: string;
+  status: 'todo' | 'inProgress' | 'qa' | 'rca' | 'done';
+  priority: 'low' | 'medium' | 'high';
   dueDate: string;
-  assignedUserId: number | null;
+  assignedUserId: string | null;
 }
 
 const initialState: {
-  tasks: Task[]
-  currentTask: Task | null | undefined
+  tasks: Task[];
 } = {
-  tasks: dummyTasks,
-  currentTask: null
-}
+  tasks: [],
+};
 
 const taskSlice = createSlice({
   initialState,
   name: "taskSlice",
   reducers: {
-    getCurrentTask: (state, action) => {
-      const Task = state.tasks.find(
-        (task) => task.id === action.payload
-      )
-      const targetTask = { ...Task }
-      state.currentTask = targetTask
+    addTask: (state, action: PayloadAction<Task>) => {
+      state.tasks.push(action.payload);
     },
-    setCurrentTask: (state) => {
-      state.currentTask = null
-    },
-    assignUser: (state, action: PayloadAction<{ taskId: number; userId: number }>) => {
-      const task = state.tasks.find((t) => t.id === action.payload.taskId);
-      if (task) {
-        task.assignedUserId = action.payload.userId;
+    editTask: (state, action: PayloadAction<Task>) => {
+      const index = state.tasks.findIndex((task) => task.id === action.payload.id);
+      if (index !== -1) {
+        state.tasks[index] = action.payload;
       }
     },
-    unassignUser: (state, action: PayloadAction<number>) => {
-      const task = state.tasks.find((t) => t.id === action.payload);
+    deleteTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== Number(action.payload));
+    },
+    // assignUserToTask: (state, action: PayloadAction<{ taskId: string; userId: string | null }>) => {
+    //   const task = state.tasks.find((t) => t.id === action.payload.taskId);
+    //   if (task) {
+    //     task.assignedUserId = action.payload.userId;
+    //   }
+    // },
+    assignUserToTask: (
+      state,
+      action: PayloadAction<{ taskId: string; userId: string | null }>
+    ) => {
+      const { taskId, userId } = action.payload;
+      const task = state.tasks.find((task) => task.id === Number(taskId));
       if (task) {
-        task.assignedUserId = null;
+        task.assignedUserId = userId;
+      }
+    },
+
+    updateTask: (state, action: PayloadAction<Task>) => {
+      const updatedTask = action.payload;
+      const taskIndex = state.tasks.findIndex((task) => task.id === updatedTask.id);
+      if (taskIndex !== -1) {
+        state.tasks[taskIndex] = updatedTask;
       }
     },
   },
 })
 
-export const { getCurrentTask, setCurrentTask, assignUser, unassignUser } = taskSlice.actions
+export const { addTask, editTask, deleteTask, assignUserToTask, updateTask } = taskSlice.actions
 export default taskSlice.reducer
