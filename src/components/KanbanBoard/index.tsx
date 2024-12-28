@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Box, Paper, Typography, Avatar, Tooltip } from '@mui/material';
-import TaskModal from '../Task/TaskModal';
+import TaskModal from '../../Modal/TaskModal';
 import { dummyTasksByStatus } from '../../data';
-import PersonIcon from '@mui/icons-material/Person';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
@@ -181,7 +180,13 @@ const KanbanBoard: React.FC = () => {
                             {task.assignedUserId ? (
                               dummyUsers.find((u) => u.id === task.assignedUserId)?.initials
                             ) : (
-                              <PersonIcon />
+                              <Avatar
+                                sx={{
+                                  height: 32,
+                                  width: 32,
+                                  fontSize: 15,
+                                }}
+                              />
                             )}
                           </Avatar>
                         </Tooltip>

@@ -3,6 +3,8 @@ import {
   IconButton,
   Box,
   Tooltip,
+  Avatar,
+  Typography,
   CircularProgress,
 } from '@mui/material';
 import {
@@ -20,104 +22,150 @@ import showBtnIcon from './../../assets/showBtnIcon.svg';
 import editBtnIcon from './../../assets/editBtnIcon.svg';
 import deleteBtnIcon from './../../assets/deleteBtnIcon.svg';
 import dataGridDownArrowIcon from './../../assets/dataGridDownArrowIcon.svg';
-import { taskData } from '../../data';
-import { useAppDispatch, useAppSelector } from '../../hook/hook';
-import { AppDispatch, RootState } from '../../store/store';
+import { dummyTasksByStatus, dummyUsers } from '../../data';
+import DeleteConfirmationModal from '../../Modal/DeleteConfirmationModal';
 
-function capitalizeFirstLetter(str: any) {
-  return str ? str[0].toUpperCase() + str.slice(1) : '';
-}
+const TaskTable: React.FC = () => {
 
-export default function TaskTable() {
-  const [tasksData, setTasksData] = useState(taskData);
-  const [isLoading, setIsLoading] = useState(false);
-  const [editData, setEditData] = useState(null);
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
-  // // Fetching task data
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const response = await fetch('/api/tasks');
-  //       const data = await response.json();
-  //       setTasksData(data);
-  //     } catch (error) {
-  //       console.error('Error fetching tasks:', error);
-  //       toast.error('Failed to fetch tasks.');
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  const handleEditClick = useCallback(
-    (data) => {
-      setEditData(data);
-    },
-    []
-  );
-
-  const handleDeleteClick = useCallback(
-    async (id) => {
-      try {
-        const result = window.confirm('Do you want to delete this task?');
-        if (result) {
-          // Call API to delete task
-          await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
-          toast.success('Task deleted successfully');
-          setTasksData((prev) => prev.filter((task) => task.id !== id));
-        }
-      } catch (error) {
-        console.error('Error deleting task:', error);
-        toast.error('Failed to delete task.');
-      }
-    },
-    []
-  );
-
-  const handleRowClick = useCallback((id) => {
-    console.log(`Row clicked: ${id}`);
-    // Navigate to task details or handle as needed
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
-  // const dispatch = useAppDispatch();
-  // const { tasks } = useAppSelector((state: RootState) => state.task);
+  useEffect(() => {
+    const flattenedTasks = Object.values(dummyTasksByStatus).flat().map((task) => {
+      const user = dummyUsers.find((user) => user.id === String(task.assignedUserId));
+      return { ...task, assignee: user || null };
+    });
+    setRows(flattenedTasks);
+  }, []);
 
-  // useEffect(() => {
-  //   dispatch(fetchTasks());
-  // }, [dispatch]);
+  const handleOpenDeleteModal = useCallback((id: string) => {
+    setTaskToDelete(id);
+    setDeleteModalOpen(true);
+  }, []);
 
-  // const handleDeleteClick = (id: number) => {
-  //   dispatch(deleteTask(id));
-  // };
+  const handleCloseDeleteModal = () => {
+    setTaskToDelete(null);
+    setDeleteModalOpen(false);
+  };
+
+  const handleConfirmDelete = useCallback(() => {
+    if (taskToDelete) {
+      setRows((prevRows) => prevRows.filter((row) => row.id !== taskToDelete));
+      toast.success('Task deleted successfully!');
+    }
+    handleCloseDeleteModal();
+  }, [taskToDelete]);
+
+  const handleEdit = (id: string) => {
+    toast.info(`Edit functionality for Task ID: ${id} coming soon!`);
+  };
+
+  const handleShowDetails = (id: string) => {
+    toast.info(`Show details for Task ID: ${id}`);
+  };
 
   const columns = [
-    { field: 'title', headerName: 'Title', flex: 1, minWidth: 200 },
-    { field: 'description', headerName: 'Description', flex: 1, minWidth: 150 },
-    { field: 'status', headerName: 'Status', flex: 1, minWidth: 150 },
-    { field: 'priority', headerName: 'Priority', flex: 1, minWidth: 150 },
+    // { field: 'id', headerName: 'ID', flex: 1, minWidth: 70 },
+    { field: 'title', headerName: 'Task Title', flex: 1, minWidth: 200 },
+    { field: 'description', headerName: 'Description', flex: 1, minWidth: 400 },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params: any) => (
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            color:
+              params.value === 'Done'
+                ? 'green'
+                : params.value === 'In Progress'
+                  ? '#0055CC'
+                  : params.value === 'To Do'
+                    ? 'orange'
+                    : 'gray',
+          }}
+        >
+          {params.value}
+        </Box>
+      ),
+    },
+    {
+      field: 'priority',
+      headerName: 'Priority',
+      flex: 1,
+      minWidth: 120,
+      renderCell: (params: any) => (
+        <Box sx={{ fontWeight: 'bold', color: params.value === 'High' ? 'red' : params.value === 'Medium' ? 'orange' : '#0055CC' }}>
+          {params.value}
+        </Box>
+      ),
+    },
     { field: 'dueDate', headerName: 'Due Date', flex: 1, minWidth: 150 },
+    {
+      field: 'assignee',
+      headerName: 'Assignee',
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params: any) => {
+        const assignee = params.value;
+        return assignee ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, margin: 1 }}>
+            <Avatar sx={{
+              bgcolor: assignee.color,
+              height: 32,
+              width: 32,
+              fontSize: 15,
+            }}>{assignee.initials}</Avatar>
+            <Typography>{assignee.name}</Typography>
+          </Box>
+        ) : (
+          <Box sx={{
+            display: 'flex', alignItems: 'center', gap: 1,
+            margin: 1
+          }}>
+            <Avatar
+              sx={{
+                height: 32,
+                width: 32,
+                fontSize: 15,
+              }}
+            />
+            <Typography color="textSecondary">Unassigned</Typography>
+          </Box>
+        );
+      },
+    },
     {
       field: 'actions',
       headerName: 'Actions',
       flex: 1,
-      minWidth: 150,
+      minWidth: 180,
       hideable: false,
-      renderCell: (params) => (
+      sortable: false,
+      renderCell: (params: any) => (
         <div className="btn-group-wrap">
-          <Tooltip title="Show">
-            <IconButton onClick={() => handleRowClick(params.id)}>
-              <img src={showBtnIcon} alt="Show" />
+          <Tooltip title="Show Details">
+            <IconButton onClick={() => handleShowDetails(params.id)}>
+              <img src={showBtnIcon} alt="Show Details" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit">
-            <IconButton onClick={() => handleEditClick(params.id)}>
+            <IconButton onClick={() => handleEdit(params.id)}>
               <img src={editBtnIcon} alt="Edit" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDeleteClick(params.id)}>
+            <IconButton onClick={() => handleOpenDeleteModal(params.id)}>
               <img src={deleteBtnIcon} alt="Delete" />
             </IconButton>
           </Tooltip>
@@ -126,54 +174,67 @@ export default function TaskTable() {
     },
   ];
 
-  const rowsForDataGrid = tasksData.map((task) => ({
-    id: task.id,
-    title: capitalizeFirstLetter(task.title),
-    description: task.description,
-    status: capitalizeFirstLetter(task.status),
-    priority: capitalizeFirstLetter(task.priority),
-    dueDate: task.dueDate,
-  }));
+  const CustomToolbar = () => (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
 
   return (
-    <>
+    <Box sx={{ height: 600, width: '100%' }}>
+      {loading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <div className="table-wrapper">
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            rowsPerPageOptions={[5, 10, 20]}
+            components={{ Toolbar: CustomToolbar }}
+            disableSelectionOnClick
+            loading={loading}
+            slots={{
+              toolbar: () => (
+                <div className="toolbar">
+                  <GridToolbarContainer>
+                    <GridToolbarColumnsButton endIcon={
+                      <img src={dataGridDownArrowIcon} alt="Columns" />
+                    } />
+                    <GridToolbarFilterButton />
+                    <GridToolbarDensitySelector endIcon={
+                      <img src={dataGridDownArrowIcon} alt="Density" />
+                    } />
+                    <GridToolbarExport endIcon={
+                      <img src={dataGridDownArrowIcon} alt="Export" />
+                    } />
+                  </GridToolbarContainer>
+                </div>
+              ),
+            }}
+            pagination
+          />
+        </div>
+      )}
       <ToastContainer />
-      <Box>
-        {isLoading ? (
-          <div className="loader">
-            <CircularProgress />
-          </div>
-        ) : (
-          <div className="table-wrapper">
-            <DataGrid
-              rowHeight={40}
-              columnHeaderHeight={40}
-              rows={rowsForDataGrid}
-              columns={columns}
-              slots={{
-                toolbar: () => (
-                  <div className="toolbar">
-                    <GridToolbarContainer>
-                      <GridToolbarColumnsButton endIcon={
-                        <img src={dataGridDownArrowIcon} alt="Columns" />
-                      } />
-                      <GridToolbarFilterButton />
-                      <GridToolbarDensitySelector endIcon={
-                        <img src={dataGridDownArrowIcon} alt="Density" />
-                      } />
-                      <GridToolbarExport endIcon={
-                        <img src={dataGridDownArrowIcon} alt="Export" />
-                      } />
-                    </GridToolbarContainer>
-                  </div>
-                ),
-              }}
-              pagination
-            />
-          </div>
-        )}
-        {editData && <div>Edit Task Modal for Task ID: {editData}</div>}
-      </Box>
-    </>
+      <DeleteConfirmationModal
+        open={deleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </Box>
   );
-}
+};
+
+export default TaskTable;
