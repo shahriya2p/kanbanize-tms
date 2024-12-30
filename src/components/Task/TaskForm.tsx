@@ -15,53 +15,63 @@ const TaskForm: React.FC = () => {
     };
 
     return (
-        <Box sx={{ padding: 2 }}>
-            <Typography variant="h4" gutterBottom>
-                Create a New Task
-            </Typography>
-            <form onSubmit={handleSubmit}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Task Name"
-                            fullWidth
-                            value={taskName}
-                            onChange={(e) => setTaskName(e.target.value)}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Task Description"
-                            fullWidth
-                            value={taskDescription}
-                            onChange={(e) => setTaskDescription(e.target.value)}
-                            multiline
-                            rows={4}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Due Date"
-                            type="date"
-                            fullWidth
-                            value={dueDate}
-                            onChange={(e) => setDueDate(e.target.value)}
-                            required
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-                </Grid>
-                <Box sx={{ textAlign: 'center', marginTop: 3 }}>
-                    <Button type="submit" variant="contained" color="primary">
-                        Submit Task
-                    </Button>
-                </Box>
-            </form>
-        </Box>
+      <Box sx={{ padding: 2 }}>
+        <Button
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          {"< back"}
+        </Button>
+        <Typography variant="h4" gutterBottom>
+          Create a New Task
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                label="Task Name"
+                fullWidth
+                value={taskName}
+                onChange={(e) => setTaskName(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Task Description"
+                fullWidth
+                value={taskDescription}
+                onChange={(e) => setTaskDescription(e.target.value)}
+                multiline
+                rows={4}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Due Date"
+                type="date"
+                fullWidth
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                required
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Box sx={{ textAlign: "center", marginTop: 3 }}>
+            <Button type="submit" variant="contained" color="primary">
+              Submit Task
+            </Button>
+          </Box>
+        </form>
+      </Box>
     );
 };
 

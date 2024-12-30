@@ -7,7 +7,7 @@ import TaskIcon from '@mui/icons-material/Task';
 
 const SideBar: React.FC = () => {
   const menuItems = [
-    { text: 'Kanban Board', icon: <DashboardIcon />, path: '/kanban' },
+    { text: 'Kanban Board', icon: <DashboardIcon />, path: '/' },
     { text: 'Analytics', icon: <BarChartIcon />, path: '/analytics' },
     { text: 'Task List', icon: <TaskIcon />, path: '/task-list' },
   ];

@@ -111,7 +111,7 @@ export const dummyTasks = [
     status: 'Done',
     priority: 'High',
     dueDate: '2024-12-20',
-    assignedUserIds: null,
+    assignedUserIds: 6,
   },
 ];
 
@@ -136,7 +136,7 @@ export const dummyTasksByStatus = {
       assignedUserId: 5,
     },
   ],
-  inProgress: [
+  "in Progress": [
     {
       id: '1',
       title: 'Implement Login Page',
@@ -155,7 +155,7 @@ export const dummyTasksByStatus = {
       status: 'QA',
       priority: 'Medium',
       dueDate: '2024-12-31',
-      assignedUserId: null,
+      assignedUserId: 6,
     },
   ],
   uat: [
@@ -188,7 +188,7 @@ export const dummyTasksByStatus = {
       status: 'Done',
       priority: 'High',
       dueDate: '2024-12-20',
-      assignedUserId: null,
+      assignedUserId: 6,
     },
   ],
 };

@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Box, Paper, Typography, Avatar, Tooltip } from '@mui/material';
-import TaskModal from '../../Modal/TaskModal';
-import { dummyTasksByStatus } from '../../data';
-import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-import UserListPopover from '../Popover/UserListPopover';
+import React, { useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Box, Paper, Typography, Avatar, Tooltip } from "@mui/material";
+import TaskModal from "../../Modal/TaskModal";
+import { dummyTasksByStatus } from "../../data";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import DensityMediumIcon from "@mui/icons-material/DensityMedium";
+import UserListPopover from "../Popover/UserListPopover";
 
 const dummyUsers = [
-  { id: 1, name: 'Priyanka Dumasia', initials: 'PD', color: '#FF5733' },
-  { id: 2, name: 'Amit Desai', initials: 'AD', color: '#33B5FF' },
-  { id: 3, name: 'Ankit Mehta', initials: 'AM', color: '#FF33D4' },
-  { id: 4, name: 'Arjun Patel', initials: 'AP', color: '#33FF57' },
-  { id: 5, name: 'John Doe', initials: 'JD', color: '#FFC300' },
+  { id: 1, name: "Priyanka Dumasia", initials: "PD", color: "#FF5733" },
+  { id: 2, name: "Amit Desai", initials: "AD", color: "#33B5FF" },
+  { id: 3, name: "Ankit Mehta", initials: "AM", color: "#FF33D4" },
+  { id: 4, name: "Arjun Patel", initials: "AP", color: "#33FF57" },
+  { id: 5, name: "John Doe", initials: "JD", color: "#FFC300" },
+  { id: 6, name: "Unassigned" },
 ];
 
 const KanbanBoard: React.FC = () => {
@@ -21,7 +22,9 @@ const KanbanBoard: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
-  const [priorityPopoverAnchor, setPriorityPopoverAnchor] = useState<HTMLElement | null>(null);
+  const [priorityPopoverAnchor, setPriorityPopoverAnchor] =
+    useState<HTMLElement | null>(null);
+  const [users, setUsers] = useState(dummyUsers);
 
   const onDragEnd = (result: any) => {
     const { source, destination } = result;
@@ -42,12 +45,20 @@ const KanbanBoard: React.FC = () => {
     });
   };
 
-  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>, taskId: string) => {
+  const handleAvatarClick = (
+    event: React.MouseEvent<HTMLElement>,
+    taskId: string,
+    assignedUserId: string
+  ) => {
     event.stopPropagation();
     // setPriorityPopoverAnchor(null);
     if (priorityPopoverAnchor) {
       setPriorityPopoverAnchor(null);
     }
+    const remainUser = users.filter(
+      (user) => user.id !== Number(assignedUserId)
+    );
+    setUsers(remainUser);
     setAnchorEl(event.currentTarget);
     setCurrentTaskId(taskId);
   };
@@ -57,6 +68,7 @@ const KanbanBoard: React.FC = () => {
     setCurrentTaskId(null);
     setSelectedTask(null);
     setPriorityPopoverAnchor(null);
+    setUsers(dummyUsers);
   };
 
   const handleAssignUser = (userId: number) => {
@@ -72,17 +84,17 @@ const KanbanBoard: React.FC = () => {
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'high':
-        return <DoubleArrowIcon sx={{ color: 'red', rotate: '270deg' }} />;
-      case 'medium':
-        return <DensityMediumIcon sx={{ color: 'orange' }} />;
-      case 'low':
-        return <KeyboardDoubleArrowDownIcon sx={{ color: '#0C66E4' }} />;
+      case "high":
+        return <DoubleArrowIcon sx={{ color: "red", rotate: "270deg" }} />;
+      case "medium":
+        return <DensityMediumIcon sx={{ color: "orange" }} />;
+      case "low":
+        return <KeyboardDoubleArrowDownIcon sx={{ color: "#0C66E4" }} />;
     }
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, padding: 2 }}>
+    <Box sx={{ display: "flex", gap: 2, padding: 2 }}>
       <DragDropContext onDragEnd={onDragEnd}>
         {Object.keys(tasks).map((column) => (
           <Droppable key={column} droppableId={column}>
@@ -94,9 +106,9 @@ const KanbanBoard: React.FC = () => {
                   padding: 2,
                   width: 240,
                   minHeight: 400,
-                  backgroundColor: '#f9f9f9',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  backgroundColor: "#f9f9f9",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 <Typography variant="h6" align="center" gutterBottom>
@@ -112,13 +124,13 @@ const KanbanBoard: React.FC = () => {
                         sx={{
                           padding: 2,
                           marginBottom: 2,
-                          backgroundColor: '#e0e0e0',
+                          backgroundColor: "#e0e0e0",
                           borderRadius: 1,
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
                           gap: 1,
-                          cursor: 'pointer',
+                          cursor: "pointer",
                         }}
                         onClick={() => setSelectedTask(task.id)}
                       >
@@ -130,7 +142,7 @@ const KanbanBoard: React.FC = () => {
                             popper: {
                               modifiers: [
                                 {
-                                  name: 'offset',
+                                  name: "offset",
                                   options: {
                                     offset: [0, -10],
                                   },
@@ -140,24 +152,33 @@ const KanbanBoard: React.FC = () => {
                           }}
                         >
                           <Box
-                            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              cursor: "pointer",
+                            }}
                           >
-                            {getPriorityIcon(task?.priority?.toLocaleLowerCase())!}
+                            {
+                              getPriorityIcon(
+                                task?.priority?.toLocaleLowerCase()
+                              )!
+                            }
                           </Box>
                         </Tooltip>
 
                         <Tooltip
                           title={
                             task.assignedUserId
-                              ? dummyUsers.find((u) => u.id === task.assignedUserId)?.name
-                              : 'Unassigned'
+                              ? users.find((u) => u.id === task.assignedUserId)
+                                  ?.name
+                              : "Unassigned"
                           }
                           placement="bottom"
                           slotProps={{
                             popper: {
                               modifiers: [
                                 {
-                                  name: 'offset',
+                                  name: "offset",
                                   options: {
                                     offset: [0, -10],
                                   },
@@ -169,16 +190,26 @@ const KanbanBoard: React.FC = () => {
                           <Avatar
                             sx={{
                               bgcolor: task.assignedUserId
-                                ? dummyUsers.find((u) => u.id === task.assignedUserId)?.color
-                                : '#bdbdbd',
+                                ? dummyUsers.find(
+                                    (u) => u.id === task.assignedUserId
+                                  )?.color
+                                : "#bdbdbd",
                               height: 32,
                               width: 32,
                               fontSize: 15,
                             }}
-                            onClick={(event) => handleAvatarClick(event, task.id)}
+                            onClick={(event) =>
+                              handleAvatarClick(
+                                event,
+                                task.id,
+                                task.assignedUserId
+                              )
+                            }
                           >
                             {task.assignedUserId ? (
-                              dummyUsers.find((u) => u.id === task.assignedUserId)?.initials
+                              dummyUsers.find(
+                                (u) => u.id === task.assignedUserId
+                              )?.initials
                             ) : (
                               <Avatar
                                 sx={{
@@ -191,7 +222,6 @@ const KanbanBoard: React.FC = () => {
                           </Avatar>
                         </Tooltip>
                       </Box>
-
                     )}
                   </Draggable>
                 ))}
@@ -203,7 +233,9 @@ const KanbanBoard: React.FC = () => {
       </DragDropContext>
       {selectedTask && (
         <TaskModal
-          task={Object.values(tasks).flat().find((t) => t.id === selectedTask)}
+          task={Object.values(tasks)
+            .flat()
+            .find((t) => t.id === selectedTask)}
           onClose={() => setSelectedTask(null)}
           onSave={(updatedTask) => {
             const updatedTasks = { ...tasks };
@@ -221,7 +253,7 @@ const KanbanBoard: React.FC = () => {
         anchorEl={anchorEl}
         onClose={handleClosePopover}
         onSelectUser={handleAssignUser}
-        users={dummyUsers}
+        users={users}
       />
     </Box>
   );
