@@ -7,12 +7,13 @@ interface LayoutProps {
   children: React.ReactNode;
   darkMode: boolean;
   handleThemeChange: () => void;
+  onLogout: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, darkMode, handleThemeChange }) => {
+const Layout: React.FC<LayoutProps> = ({ children, darkMode, handleThemeChange,onLogout }) => {
   return (
     <Box sx={{ display: 'flex' }}>
-      <NavBar darkMode={darkMode} handleThemeChange={handleThemeChange} />
+      <NavBar darkMode={darkMode} handleThemeChange={handleThemeChange} onLogout ={onLogout} />
       <SideBar />
       <Box
         component="main"

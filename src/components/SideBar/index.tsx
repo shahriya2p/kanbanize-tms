@@ -4,12 +4,14 @@ import { NavLink } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import TaskIcon from '@mui/icons-material/Task';
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 const SideBar: React.FC = () => {
   const menuItems = [
-    { text: 'Kanban Board', icon: <DashboardIcon />, path: '/' },
+    { text: 'Kanban Board', icon: <DashboardIcon />, path: '/kanban' },
     { text: 'Analytics', icon: <BarChartIcon />, path: '/analytics' },
     { text: 'Task List', icon: <TaskIcon />, path: '/task-list' },
+    { text: 'Profile', icon: <AccountCircle />, path: '/profile' },
   ];
 
   return (
