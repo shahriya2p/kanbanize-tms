@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Box,
+  Container,
   TextField,
   Button,
-  Typography,
-  Container,
   Paper,
+  Typography,
   Grid2,
 } from "@mui/material";
+import WelcomeDialog from "../components/WelcomeDialog";
+import { useNavigate } from "react-router-dom";
 
 const dummyUsers = [
   {
@@ -26,116 +27,119 @@ const LoginPage = ({ onLogin }: any) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    
+    const loginID = localStorage.getItem("loginID");
+    if(loginID){
+      navigate("/kanban");
+    }
+  },[]);
 
   const handleLogin = () => {
     const user = dummyUsers.find(
       (user) => user.name.toLowerCase() === username.toLowerCase()
     );
     if (user && user.password === password) {
-      onLogin(user.id);
-      alert(`Welcome, ${user.name}!`);
+      setLoading(true);
+      setCurrentUser(user.name);
+      setDialogOpen(true);
+      setTimeout(() => {
+        setLoading(false);
+        setTimeout(() => {
+          setDialogOpen(false);
+          onLogin(user.id);
+        }, 3000);
+      }, 2000);
     } else {
       setError("Invalid username or password.");
     }
   };
 
   return (
-    <Box
+    <Container
+      maxWidth="xs"
       sx={{
-        minHeight: "100vh",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage:
-          "url('https://source.unsplash.com/1600x900/?productivity,office')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
       }}
     >
-      <Container
-        maxWidth="xs"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+      <Paper
+        elevation={3}
+        sx={{ padding: 4, width: "100%", textAlign: "center" }}
       >
-        <Paper
-          elevation={3}
+        <Grid2
           sx={{
-            padding: 4,
-            width: "100%",
-            textAlign: "center",
-            backdropFilter: "blur(5px)",
-            backgroundColor: "rgba(255, 255, 255, 0.85)",
-            borderRadius: "10px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Grid2
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Grid2 size={6}>
-              <img
-                src="/src/assets/kanbanizeFavicon.png"
-                height={60}
-                alt="Kanbanize"
-              />
-            </Grid2>
+          <Grid2 size={6}>
+            <img
+              src="/src/assets/kanbanizeFavicon.png"
+              height={60}
+              alt="Kanbanize"
+            />
           </Grid2>
-          <Typography
-            variant="h5"
-            sx={{ mt: 2, mb: 4, fontWeight: "bold", color: "#0055CC" }}
-          >
-            Login to Kanbanize Board
+        </Grid2>
+        <Typography variant="h5" sx={{ mt: 2, mb: 4 }}>
+          Login to Kanbanize Board
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{ mt: 1, mb: 3, color: "#666", fontStyle: "italic" }}
+        >
+          Organize your tasks efficiently
+        </Typography>
+        <TextField
+          label="Username"
+          fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+            {error}
           </Typography>
-          <Typography
-            variant="body2"
-            sx={{ mt: 1, mb: 3, color: "#666", fontStyle: "italic" }}
-          >
-            Organize your tasks efficiently
-          </Typography>
-          <TextField
-            label="Username"
-            fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          {error && (
-            <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-              {error}
-            </Typography>
-          )}
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleLogin}
-            sx={{
-              py: 1.5,
-              fontSize: "1rem",
-              fontWeight: "bold",
-              mt: 2,
-            }}
-          >
-            Login
-          </Button>
-        </Paper>
-      </Container>
-    </Box>
+        )}
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleLogin}
+          sx={{
+            py: 1.5,
+            fontSize: "1rem",
+            fontWeight: "bold",
+            mt: 2,
+          }}
+        >
+          Login
+        </Button>
+      </Paper>
+      <WelcomeDialog
+        open={dialogOpen}
+        userName={currentUser}
+        loading={loading}
+      />
+    </Container>
   );
 };
 

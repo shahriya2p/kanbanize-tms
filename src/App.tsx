@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { CircularProgress, CssBaseline, ThemeProvider } from "@mui/material";
 import Layout from "./components/Layout";
 import { darkTheme, lightTheme } from "./utils/theme";
 import { ToastContainer } from "react-toastify";
 import Router from "./Router";
 import LoginPage from "./pages/Login";
 import { useNavigate } from "react-router-dom";
-import NavBar from "./components/Navbar";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loginID = localStorage.getItem("loginID");
     setIsLoggedIn(!!loginID); // Set to true if loginID exists
+    if (loginID) {
+      setIsLoggedIn(true);
+    }
+    setIsLoading(false); 
   }, []);
   const navigate = useNavigate();
 
@@ -33,6 +37,20 @@ function App() {
   const handleThemeChange = () => {
     setDarkMode(!darkMode);
   };
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
   return isLoggedIn ? (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
@@ -46,17 +64,7 @@ function App() {
       </Layout>
     </ThemeProvider>
   ) : (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
-      <Box>
-        <NavBar
-          darkMode={darkMode}
-          handleThemeChange={handleThemeChange}
-          loginPage={true}
-        />
-        <LoginPage onLogin={handleLogin} />
-      </Box>
-    </ThemeProvider>
+    <LoginPage onLogin={handleLogin} />
   );
 }
 
