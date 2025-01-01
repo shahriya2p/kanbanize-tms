@@ -1,6 +1,18 @@
 import React, { useState } from "react";
-import { TextField, Button, Grid, Typography, Box, FormControl } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Box
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {
+  CREATE_TASK,
+  RESET,
+  SUBMIT_TASK,
+  CANCEL,
+} from "../../resources/data.json";
 
 const TaskForm: React.FC = () => {
   const [taskName, setTaskName] = useState("");
@@ -27,7 +39,7 @@ const TaskForm: React.FC = () => {
         {"< back"}
       </Button>
       <Typography variant="h4" gutterBottom>
-        Create a New Task
+        {CREATE_TASK}
       </Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
@@ -71,7 +83,7 @@ const TaskForm: React.FC = () => {
             variant="contained"
             onClick={() => navigate("/")}
           >
-            cancel
+            {CANCEL}
           </Button>
           <Button
             style={{ marginLeft: 25 }}
@@ -84,7 +96,7 @@ const TaskForm: React.FC = () => {
               setDueDate("");
             }}
           >
-            reset
+            {RESET}
           </Button>
           <Button
             style={{ marginLeft: 25 }}
@@ -92,7 +104,7 @@ const TaskForm: React.FC = () => {
             variant="contained"
             color="success"
           >
-            Submit Task
+            {SUBMIT_TASK}
           </Button>
         </Box>
       </form>

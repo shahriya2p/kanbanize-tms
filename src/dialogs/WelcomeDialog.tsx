@@ -5,6 +5,12 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+import {
+  LOGGING_IN,
+  WELCOME,
+  WELCOME_MESSAGE,
+  SMILY,
+} from "../resources/data.json";
 
 const WelcomeDialog = ({ open, userName, loading }: any) => {
   return (
@@ -23,7 +29,8 @@ const WelcomeDialog = ({ open, userName, loading }: any) => {
       >
         {loading ? (
           <>
-            <CircularProgress sx={{ color: "#1976D2" }} /> {/* Primary site color */}
+            <CircularProgress sx={{ color: "#1976D2" }} />{" "}
+            {/* Primary site color */}
             <Typography
               variant="h6"
               sx={{
@@ -32,7 +39,7 @@ const WelcomeDialog = ({ open, userName, loading }: any) => {
                 fontWeight: "bold",
               }}
             >
-              Logging in...
+              {LOGGING_IN}
             </Typography>
           </>
         ) : (
@@ -53,7 +60,7 @@ const WelcomeDialog = ({ open, userName, loading }: any) => {
                 variant="h4"
                 sx={{ color: "#FFFFFF", fontWeight: "bold" }}
               >
-                😊
+                {SMILY}
               </Typography>
             </Box>
             <Typography
@@ -64,7 +71,7 @@ const WelcomeDialog = ({ open, userName, loading }: any) => {
                 fontWeight: "bold",
               }}
             >
-              Welcome, {userName}!
+              {WELCOME}, {userName}!
             </Typography>
             <Typography
               variant="body2"
@@ -73,7 +80,7 @@ const WelcomeDialog = ({ open, userName, loading }: any) => {
                 mt: 1,
               }}
             >
-              We're glad to have you back. Get ready to manage your tasks!
+              {WELCOME_MESSAGE}
             </Typography>
           </>
         )}

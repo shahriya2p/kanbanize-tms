@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Modal,
   Box,
@@ -6,8 +6,9 @@ import {
   TextField,
   Button,
   IconButton,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { SAVE, CANCEL } from "../resources/data.json";
 
 interface TaskModalProps {
   task: any;
@@ -30,12 +31,12 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
     <Modal open onClose={onClose}>
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           width: 1200,
-          bgcolor: 'background.paper',
+          bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: 24,
           p: 4,
@@ -52,7 +53,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
           fullWidth
           margin="normal"
           value={editableTask.title}
-          onChange={(e) => handleFieldChange('title', e.target.value)}
+          onChange={(e) => handleFieldChange("title", e.target.value)}
         />
         <TextField
           label="Description"
@@ -61,7 +62,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
           rows={3}
           margin="normal"
           value={editableTask.description}
-          onChange={(e) => handleFieldChange('description', e.target.value)}
+          onChange={(e) => handleFieldChange("description", e.target.value)}
         />
         <TextField
           label="Due Date"
@@ -70,14 +71,14 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
           margin="normal"
           InputLabelProps={{ shrink: true }}
           value={editableTask.dueDate}
-          onChange={(e) => handleFieldChange('dueDate', e.target.value)}
+          onChange={(e) => handleFieldChange("dueDate", e.target.value)}
         />
         <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
           <Button variant="outlined" color="secondary" onClick={onClose}>
-            Cancel
+            {CANCEL}
           </Button>
           <Button variant="contained" color="primary" onClick={handleSave}>
-            Save
+            {SAVE}
           </Button>
         </Box>
       </Box>

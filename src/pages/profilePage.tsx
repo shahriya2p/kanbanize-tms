@@ -1,19 +1,51 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Box, Avatar, Typography, Paper, Container, Grid } from "@mui/material";
 import {
-  Box,
-  Avatar,
-  Typography,
-  Paper,
-  Container,
-  Grid,
-} from "@mui/material";
+  PROFILE_ERROR,
+  ROLE,
+  EMAIL,
+  TEAM,
+  PROJECT_ASSIGNED,
+  KANBANIZE_BOARD,
+  DEVELOPMENT_TEAM,
+} from "../resources/data.json";
 
 const dummyUsers = [
-  { id: 1, name: "Viresh Mistry", email: "viresh.m@example.com", color: "#FF5733", role: "Project Manager" },
-  { id: 2, name: "Amit Desai", email: "amit.d@example.com", color: "#33B5FF", role: "Developer" },
-  { id: 3, name: "Ankit Mehta", email: "ankit.m@example.com", color: "#FF33D4", role: "QA Tester" },
-  { id: 4, name: "Arjun Patel", email: "arjun.p@example.com", color: "#33FF57", role: "UI/UX Designer" },
-  { id: 5, name: "John Doe", email: "john.d@example.com", color: "#FFC300", role: "Team Lead" },
+  {
+    id: 1,
+    name: "Viresh Mistry",
+    email: "viresh.m@example.com",
+    color: "#FF5733",
+    role: "Project Manager",
+  },
+  {
+    id: 2,
+    name: "Amit Desai",
+    email: "amit.d@example.com",
+    color: "#33B5FF",
+    role: "Developer",
+  },
+  {
+    id: 3,
+    name: "Ankit Mehta",
+    email: "ankit.m@example.com",
+    color: "#FF33D4",
+    role: "QA Tester",
+  },
+  {
+    id: 4,
+    name: "Arjun Patel",
+    email: "arjun.p@example.com",
+    color: "#33FF57",
+    role: "UI/UX Designer",
+  },
+  {
+    id: 5,
+    name: "John Doe",
+    email: "john.d@example.com",
+    color: "#FFC300",
+    role: "Team Lead",
+  },
 ];
 
 const ProfilePage = () => {
@@ -22,7 +54,9 @@ const ProfilePage = () => {
   useEffect(() => {
     const loginID = localStorage.getItem("loginID");
     if (loginID) {
-      const loggedInUser = dummyUsers.find((user) => user.id === parseInt(loginID));
+      const loggedInUser = dummyUsers.find(
+        (user) => user.id === parseInt(loginID)
+      );
       setUser(loggedInUser);
     }
   }, []);
@@ -31,10 +65,15 @@ const ProfilePage = () => {
     return (
       <Container
         maxWidth="sm"
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
       >
         <Typography variant="h6" color="error">
-          User not found. Please login again.
+          {PROFILE_ERROR}
         </Typography>
       </Container>
     );
@@ -78,27 +117,27 @@ const ProfilePage = () => {
           {user.name}
         </Typography>
         <Typography variant="body1" sx={{ mb: 4, color: "#555" }}>
-          Role: {user.role}
+          {ROLE}: {user.role}
         </Typography>
         <Box sx={{ textAlign: "left", width: "100%" }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="subtitle2" color="textSecondary">
-                Email:
+                {EMAIL}:
               </Typography>
               <Typography variant="body1">{user.email}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="subtitle2" color="textSecondary">
-                Team:
+                {TEAM}:
               </Typography>
-              <Typography variant="body1">Development Team</Typography>
+              <Typography variant="body1">{DEVELOPMENT_TEAM}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="subtitle2" color="textSecondary">
-                Projects Assigned:
+                {PROJECT_ASSIGNED}:
               </Typography>
-              <Typography variant="body1">Kanbanize Board</Typography>
+              <Typography variant="body1">{KANBANIZE_BOARD}</Typography>
             </Grid>
           </Grid>
         </Box>

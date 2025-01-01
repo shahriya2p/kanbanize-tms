@@ -17,46 +17,22 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import {
+  LOGOUT,
+  ADD_NEW_TASK,
+  TASK_MANAGEMENT_SYSTEM,
+} from "../../resources/data.json";
 
 const NavBar: React.FC<{
   darkMode: boolean;
   handleThemeChange: () => void;
   onLogout?: () => void;
-  loginPage?: boolean;
-}> = ({ darkMode, handleThemeChange, onLogout, loginPage }) => {
+}> = ({ darkMode, handleThemeChange, onLogout }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
-  if (loginPage) {
-    return (
-      <AppBar position="fixed">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2, display: { sm: "none" } }}
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ ml: 95 }}>
-            Task Management System
-          </Typography>
-          <IconButton
-            sx={{ ml: 46 }}
-            onClick={handleThemeChange}
-            color="inherit"
-            aria-label="toggle theme"
-          >
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-    );
-  }
 
   const drawer = (
     <Box sx={{ width: 180 }}>
@@ -95,7 +71,7 @@ const NavBar: React.FC<{
             component="div"
             sx={{ flexGrow: 1, marginLeft: "240px" }}
           >
-            Task Management System
+            {TASK_MANAGEMENT_SYSTEM}
           </Typography>
           <Button
             color="inherit"
@@ -111,7 +87,7 @@ const NavBar: React.FC<{
                 gap: 2,
               }}
             >
-              <AddIcon sx={{ fontSize: 22 }} /> Add a New Task
+              <AddIcon sx={{ fontSize: 22 }} /> {ADD_NEW_TASK}
             </div>
           </Button>
           <IconButton
@@ -123,7 +99,7 @@ const NavBar: React.FC<{
             {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
           <Button color="secondary" onClick={onLogout}>
-            Logout
+            {LOGOUT}
           </Button>
         </Toolbar>
       </AppBar>

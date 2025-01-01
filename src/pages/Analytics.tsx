@@ -1,11 +1,4 @@
-import React from "react";
-import {
-  Container,
-  Grid,
-  Paper,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Container, Grid, Paper, Typography } from "@mui/material";
 import {
   LineChart,
   Line,
@@ -24,12 +17,21 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts";
+import {
+  TASK_ANALYTICS_DASHBOARD,
+  TASK_PROGRESS_OVER_TIME,
+  TASK_DISTRIBUTION,
+  TASK_STATUS_OVERSVIEW,
+  USER_TASK_ANALYSIS,
+} from "../resources/data.json";
 
 const taskData = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
   name: `Task ${i + 1}`,
-  status: ["Pending", "In Progress", "Completed"][(i % 3)],
-  eta: new Date(new Date().setDate(new Date().getDate() + (i % 7))).toLocaleDateString(),
+  status: ["Pending", "In Progress", "Completed"][i % 3],
+  eta: new Date(
+    new Date().setDate(new Date().getDate() + (i % 7))
+  ).toLocaleDateString(),
   progress: Math.floor(Math.random() * 100),
   assignedTo: [`User ${i % 5}`, `User ${(i + 1) % 5}`][i % 2],
 }));
@@ -40,9 +42,18 @@ const lineData = taskData.map((task) => ({
 }));
 
 const pieData = [
-  { name: "Pending", value: taskData.filter((t) => t.status === "Pending").length },
-  { name: "In Progress", value: taskData.filter((t) => t.status === "In Progress").length },
-  { name: "Completed", value: taskData.filter((t) => t.status === "Completed").length },
+  {
+    name: "Pending",
+    value: taskData.filter((t) => t.status === "Pending").length,
+  },
+  {
+    name: "In Progress",
+    value: taskData.filter((t) => t.status === "In Progress").length,
+  },
+  {
+    name: "Completed",
+    value: taskData.filter((t) => t.status === "Completed").length,
+  },
 ];
 
 const radarData = [
@@ -56,14 +67,14 @@ const AnalyticsPage = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Task Analytics Dashboard
+        {TASK_ANALYTICS_DASHBOARD}
       </Typography>
       <Grid container spacing={4}>
         {/* Line Chart */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Task Progress Over Time
+              {TASK_PROGRESS_OVER_TIME}
             </Typography>
             <LineChart
               width={500}
@@ -84,7 +95,7 @@ const AnalyticsPage = () => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Task Distribution
+              {TASK_DISTRIBUTION}
             </Typography>
             <PieChart width={400} height={300}>
               <Pie
@@ -112,7 +123,7 @@ const AnalyticsPage = () => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Task Status Overview
+              {TASK_STATUS_OVERSVIEW}
             </Typography>
             <BarChart width={500} height={300} data={pieData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -128,9 +139,16 @@ const AnalyticsPage = () => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              User Task Analysis
+              {USER_TASK_ANALYSIS}
             </Typography>
-            <RadarChart cx={250} cy={150} outerRadius={100} width={500} height={300} data={radarData}>
+            <RadarChart
+              cx={250}
+              cy={150}
+              outerRadius={100}
+              width={500}
+              height={300}
+              data={radarData}
+            >
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" />
               <PolarRadiusAxis />

@@ -1,12 +1,13 @@
-import React from 'react';
-import { Typography, Box } from '@mui/material';
-import KanbanBoard from '../components/KanbanBoard';
+import React from "react";
+import { Typography, Box } from "@mui/material";
+import KanbanBoard from "../components/KanbanBoard";
+import { KANBAN_BOARD } from "../resources/data.json";
 
 const KanbanBoardPage: React.FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Kanban Board
+        {KANBAN_BOARD}
       </Typography>
       <KanbanBoard />
     </Box>

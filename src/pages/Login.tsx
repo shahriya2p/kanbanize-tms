@@ -7,8 +7,9 @@ import {
   Typography,
   Grid2,
 } from "@mui/material";
-import WelcomeDialog from "../components/WelcomeDialog";
+import WelcomeDialog from "../dialogs/WelcomeDialog";
 import { useNavigate } from "react-router-dom";
+import { LOGIN, LOGIN_TITLE, MESSAGE } from "../resources/data.json";
 
 const dummyUsers = [
   {
@@ -32,13 +33,12 @@ const LoginPage = ({ onLogin }: any) => {
   const [currentUser, setCurrentUser] = useState("");
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    
+  useEffect(() => {
     const loginID = localStorage.getItem("loginID");
-    if(loginID){
+    if (loginID) {
       navigate("/kanban");
     }
-  },[]);
+  }, []);
 
   const handleLogin = () => {
     const user = dummyUsers.find(
@@ -91,13 +91,13 @@ const LoginPage = ({ onLogin }: any) => {
           </Grid2>
         </Grid2>
         <Typography variant="h5" sx={{ mt: 2, mb: 4 }}>
-          Login to Kanbanize Board
+          {LOGIN_TITLE}
         </Typography>
         <Typography
           variant="body2"
           sx={{ mt: 1, mb: 3, color: "#666", fontStyle: "italic" }}
         >
-          Organize your tasks efficiently
+          {MESSAGE}
         </Typography>
         <TextField
           label="Username"
@@ -131,7 +131,7 @@ const LoginPage = ({ onLogin }: any) => {
             mt: 2,
           }}
         >
-          Login
+          {LOGIN}
         </Button>
       </Paper>
       <WelcomeDialog
